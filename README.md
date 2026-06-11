@@ -35,7 +35,7 @@ Additional chapters in drafting.
 
 ## Status
 
-Under active drafting. Independent framework, Apache 2.0 licensed, open for use and citation. The author has filed this topic in the CSA Identity and Access Management Working Group June 2026 article cycle; WG review and acceptance are pending and independent of this repository's status.
+Under active drafting. Independent framework, Apache 2.0 licensed, open for use and citation by any standards body, working group, vendor, researcher, or practitioner.
 
 Drafts are versioned as the framework evolves.
 
