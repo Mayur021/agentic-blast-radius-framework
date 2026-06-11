@@ -403,12 +403,12 @@ The OSI lens complements the OS-analog (Pirch et al.) by making the network-stac
 
 ### 12.3 Cross-framework engagement points
 
-This chapter is intended as input to:
+This chapter is intended as input to any working group, standards body, or research effort that wants to adopt or extend it. Adjacent surfaces where the substance is directly relevant:
 
-- The CSA IAM Working Group framework deliverable on Agentic Blast Radius (active).
 - The CoSAI WS4 Agent Credentials RFC (#99, Section 5 Credential Lifecycle & Enforcement sub-section).
 - The OWASP AISVS v1.01 train (C9.2.6 / C9.2.7 reference implementation).
 - The IETF Internet-Draft on action-class authority + chain audit schema (Q3-Q4 2026 target).
+- Working groups under CSA, OWASP, CoSAI, NIST, ISO, IETF where blast-radius modeling at the identity layer is in scope.
 
 ### 12.4 Anchor citation
 
