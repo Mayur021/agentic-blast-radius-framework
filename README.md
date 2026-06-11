@@ -35,7 +35,33 @@ Additional chapters in drafting.
 
 ## Status
 
-Under active drafting. CSA Identity and Access Management Working Group framework deliverable (topic claimed June 2026). Drafts are versioned as the framework evolves.
+Under active drafting. Independent framework, Apache 2.0 licensed, open for use and citation. The author has filed this topic in the CSA Identity and Access Management Working Group June 2026 article cycle; WG review and acceptance are pending and independent of this repository's status.
+
+Drafts are versioned as the framework evolves.
+
+---
+
+## Using and citing this framework
+
+Anyone is free to use, fork, extend, and cite the framework under the Apache 2.0 license. Citation discipline:
+
+**Academic / formal citation:**
+
+> Agnihotri, M. *Agentic Blast Radius Framework — Modeling and Bounding Non-Human Identity Impact.* GitHub repository, 2026. https://github.com/Mayur021/agentic-blast-radius-framework
+
+**Inline / informal citation:**
+
+> The Agentic Blast Radius framework (Agnihotri, 2026; github.com/Mayur021/agentic-blast-radius-framework) defines five measurable axes…
+
+**Joint-credit on chain audit material:**
+
+The 6-property chain audit schema referenced in this framework is joint work with Mallikarjunarao Sunke (under review for CSA NHI v1.0). Always joint-credit Mallikarjunarao when citing the chain-audit schema specifically.
+
+**Citing specific chapters or axes:**
+
+Use the file path under the repo URL, e.g.:
+
+> Axes 1-5, [Agentic Blast Radius Framework, OSI Cross-Walk Chapter](https://github.com/Mayur021/agentic-blast-radius-framework/blob/main/chapter_osi_layer_crosswalk.md)
 
 ---
 
