@@ -55,7 +55,7 @@ Anyone is free to use, fork, extend, and cite the framework under the Apache 2.0
 
 **Joint-credit on chain audit material:**
 
-The 6-property chain audit schema referenced in this framework is joint work with Mallikarjunarao Sunke (under review for CSA NHI v1.0). Always joint-credit Mallikarjunarao when citing the chain-audit schema specifically.
+The chain-audit material referenced in this framework reflects joint peer-review work with Mallikarjunarao Sunke. Per 2026-06-15 deep audit of `/root/Defining_Non-Human_Identity.docx`: CSA NHI v1.0 anchors a four-element attribution language (delegator / agent / intent / actions) at paragraph 222 (the joint contribution that landed in v1.0); the full six-property chain audit schema (chain-id binding, originating-principal immutability as schema property, audit telemetry surface) is targeted for CSA NHI v2.0 inclusion. Always joint-credit Mallikarjunarao Sunke and specify which anchor when citing.
 
 **Citing specific chapters or axes:**
 
@@ -71,7 +71,7 @@ Use the file path under the repo URL, e.g.:
 - **CSA NHI v1.0** cited as *"Working Draft"* — the document subtitle as of 2026-06-11.
 - **CoSAI WS4 #99 Agent Credentials** cited as *"in 4-week initial-draft window"* (window opened 2026-06-04 working session).
 - **CoSAI WS4 #50 Trust-Aware Dataplane** cited as *"accepted RFC"*.
-- **6-property chain audit schema** joint-credited to **Mallikarjunarao Sunke** — never solo claim.
+- **CSA NHI joint contribution** joint-credited to **Mallikarjunarao Sunke** — never solo claim. v1.0 anchors the four-element attribution language (delegator / agent / intent / actions) at paragraph 222; the full six-property chain audit schema is targeted for v2.0 inclusion (verified 2026-06-15 against `/root/Defining_Non-Human_Identity.docx`).
 - **Pirch et al. arxiv 2605.14932** cited as the anchor for OS-analog reasoning about agent security.
 
 ---
