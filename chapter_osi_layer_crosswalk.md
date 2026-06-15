@@ -140,7 +140,7 @@ The transport layer governs how agent connections are established, how long they
 
 ### Attack vectors observed 2025-2026
 
-- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9.6.7 specifically targets this: "long-running agent sessions re-evaluate current backend authorization policy for the agent's identity on every privileged action."
+- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9.5.6 specifically targets this: "long-running agent sessions re-evaluate current backend authorization policy on every privileged action" (renumbered from former C9.6.7 in the 2026-06-15 PR #928 + #934 cleanup).
 - **Connection reuse across delegation hops.** Agent A opens a TLS connection to a backend; agent A then delegates a task to agent B, which inherits the connection without re-attesting. The receipt-binding gap is documented in the AISVS research chapter for C9.2.3.
 - **Token theft and replay over the wire.** Without channel binding, a stolen bearer token can be replayed from any client to any service.
 - **Port-level exposure of agent control planes.** PraisonAI CVE-2026-44338 (May 2026): agent server bound to 0.0.0.0 with AUTH_ENABLED=False as a hardcoded default; check_auth() that fails open. The orchestrator's approval logic was unreachable on the wire path attackers actually used.
@@ -154,7 +154,7 @@ The transport layer governs how agent connections are established, how long they
 | Demonstrating Proof of Possession at the application layer | RFC 9449 (DPoP) |
 | Token exchange for delegation | RFC 8693 |
 | Rich authorization requests (scope binding) | RFC 9396 |
-| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9.6.7 (Level 3) |
+| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9.5.6 (Level 3 — renumbered from former C9.6.7 in 2026-06-15 cleanup) |
 | Closed-by-default agent control-plane bind addresses | NIST SP 800-207 |
 
 ### Gaps
@@ -186,11 +186,11 @@ Sessions are how agents persist context across multiple events. The Pirch framew
 
 | Control | Source |
 | --- | --- |
-| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9.6.7 (Level 3) |
+| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9.5.6 (Level 3 — renumbered from former C9.6.7 in 2026-06-15 cleanup) |
 | Session-bound credentials with short TTL | OAuth 2.1, AISVS C9.2.3 |
 | Cryptographic binding of approvals to nonce + TTL | AISVS C9.2.3 (Level 2) |
-| Independent context window per agent | AISVS C9.8.3 (Level 3) |
-| Memory namespace isolation across agents | AISVS C9.8.2 (Level 2) |
+| Independent context window per agent | (former AISVS C9.8.3 — removed with C9.8 section in 2026-06-15 PR #928 + #934 cleanup; multi-agent isolation now has no v1.0 main anchor; v1.01 contribution opportunity) |
+| Memory namespace isolation across agents | (former AISVS C9.8.2 — removed with C9.8 section in 2026-06-15 cleanup; v1.01 contribution opportunity) |
 
 ### Gaps
 
@@ -263,8 +263,8 @@ L7 is where most of the existing literature on agentic security clusters. The ap
 | Manifest-declared action class drives the gate | OWASP AISVS C9.2.6 (Level 2, Proposed for v1.01) |
 | Worst-case action class across the chain governs | OWASP AISVS C9.2.7 (Level 3, Proposed for v1.01) |
 | Tool manifests declare privileges and side-effect level | OWASP AISVS C9.3.5 (Level 2) |
-| Architectural separation of plan generation from untrusted data | OWASP AISVS C9.9.1 (Level 2) |
-| Origin-aware policy enforcement | OWASP AISVS C9.9.4 / 9.9.5 (Level 3) |
+| Architectural separation of plan generation from untrusted data | OWASP AISVS C9.3.6 (Level 2 — closest equivalent after former C9.9.1 was removed in 2026-06-15 PR #928 + #934 cleanup) |
+| Origin-aware policy enforcement | (former AISVS C9.9.4 / 9.9.5 — removed with C9.9 section in 2026-06-15 cleanup; no direct v1.0 main anchor; v1.01 contribution opportunity) |
 | MCP authentication and authorization | MCP 2026-07-28 spec, OAuth 2.1 + RFC 9728 + RFC 8707 |
 | A2A AgentCard signed with JWS + JCS + mTLS | A2A v1.0.1 |
 | Verifiable credentials for agent claims | W3C VC Data Model 2.0 (Recommendation 15 May 2025), DID Core 1.0 |
