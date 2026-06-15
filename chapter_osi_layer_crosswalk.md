@@ -274,7 +274,7 @@ L7 is where most of the existing literature on agentic security clusters. The ap
 
 - **Cross-step composition gating remains rare in production.** AISVS C9.2.7 is Level 3 and Proposed for v1.01 — implementations are not yet broadly available.
 - **Manifest-declared classification is implementation-specific.** AISVS specifies that the class belongs in the tool/action manifest as a structured property; it does not specify the wire format. CoSAI WS4 Section 5 (Credential Lifecycle & Enforcement, in the Agent Credentials RFC sub-section signup window) is one venue for converging on a wire-level schema.
-- **Cryptographic chain audit at the application layer** is still emerging. The 6-property chain audit schema (joint work with Mallikarjunarao Sunke, under review for CSA NHI v1.0) covers identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal. The schema needs to be carried in the action manifest and verified at the gate; specification of where in the manifest is still under discussion.
+- **Cryptographic chain audit at the application layer** is still emerging. Per 2026-06-15 deep audit of `/root/Defining_Non-Human_Identity.docx`: CSA NHI v1.0 anchors a four-element attribution language (delegator / agent / intent / actions) at paragraph 222 — a joint peer-review contribution with Mallikarjunarao Sunke. The full six-property chain audit schema developed in the same joint work (identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property) is NOT verbatim in v1.0 and is targeted for v2.0 inclusion. The schema needs to be carried in the action manifest and verified at the gate; specification of where in the manifest is still under discussion.
 
 ### Cross-walk to blast radius
 
@@ -298,7 +298,7 @@ When the action class declaration is stripped at any layer in transit, the gate 
 
 ### 9.3 Chain audit across the stack
 
-The 6-property chain audit schema (joint work with Mallikarjunarao Sunke, under review for CSA NHI v1.0) captures identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal. Each property answers a question at a different OSI layer:
+The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion — v1.0 anchors only the four-element attribution language at paragraph 222) captures identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property. Each property answers a question at a different OSI layer:
 
 | Property | Layer where it is established | Layer where it is verified |
 | --- | --- | --- |
@@ -373,7 +373,7 @@ AISVS C9.2.7 introduces the worst-case-governs rule as Level 3 and Proposed for 
 
 ### 11.5 Chain audit schema as wire format
 
-The 6-property chain audit schema (joint work with Mallikarjunarao Sunke, under review for CSA NHI v1.0) is well-formed at the property level. The wire format — where in the action manifest, the credential, or the JWS envelope the properties live — is not yet specified. CoSAI WS4 #99 and CSA NHI v1.0 review window are the active drafting venues.
+The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion — v1.0 anchors only the four-element attribution language at paragraph 222) is well-formed at the property level. The wire format — where in the action manifest, the credential, or the JWS envelope the properties live — is not yet specified. CoSAI WS4 #99 and CSA NHI v2.0 drafting window are the active drafting venues.
 
 ### 11.6 Hardware-rooted agent identity
 
@@ -397,7 +397,7 @@ The OSI lens complements the OS-analog (Pirch et al.) by making the network-stac
 
 - A portable cross-cloud agent identity federation specification.
 - A normative canonical-form specification for approval binding at L6.
-- A wire-format specification for the 6-property chain audit schema at L7.
+- A wire-format specification for the full six-property chain audit schema at L7 (CSA NHI v2.0 hook).
 - A hardware-rooted agent-instance identity binding spec for L1 → L7.
 - A cross-step composition gating reference implementation (AISVS C9.2.7 reference).
 
@@ -407,7 +407,7 @@ This chapter is intended as input to any working group, standards body, or resea
 
 - The CoSAI WS4 Agent Credentials RFC (#99, Section 5 Credential Lifecycle & Enforcement sub-section).
 - The OWASP AISVS v1.01 train (C9.2.6 / C9.2.7 reference implementation).
-- The IETF Internet-Draft on action-class authority + chain audit schema (Q3-Q4 2026 target).
+- The IETF Internet-Draft on action-class authority + full six-property chain audit schema (Q3-Q4 2026 target; CSA NHI v2.0 hook).
 - Working groups under CSA, OWASP, CoSAI, NIST, ISO, IETF where blast-radius modeling at the identity layer is in scope.
 
 ### 12.4 Anchor citation
@@ -422,7 +422,7 @@ Pirch, L., Horlboge, M., Großmann, P., Asif, S. M., Kireev, K., Holz, T., and R
 - **CSA NHI v1.0:** Currently subtitled "Working Draft" in the docx header (verified 2026-06-11). Do not cite as a released v1.0 specification. Use "under peer review for v1.0" or "Working Draft."
 - **CoSAI WS4 Agent Credentials (#99):** In 4-week initial-draft window as of 2026-06-04. Cite as "in drafting" or "active drafting in WS4."
 - **CoSAI WS4 Trust-Aware Dataplane (#50):** Accepted, on focus slide. Cite as "accepted RFC."
-- **6-property chain audit schema:** Joint work with Mallikarjunarao Sunke. Always joint-credit; never solo claim.
+- **CSA NHI joint contribution:** Verified 2026-06-15 against `/root/Defining_Non-Human_Identity.docx`. v1.0 anchors a four-element attribution language (delegator / agent / intent / actions) at paragraph 222 (joint Mayur + Mallikarjunarao Sunke). The full six-property chain audit schema (chain-id binding, originating-principal immutability as schema property, audit telemetry surface) is targeted for v2.0 inclusion (joint Mayur + Mallikarjunarao Sunke). Always joint-credit; never solo claim; specify which anchor (v1.0 four-element subset OR v2.0-targeted full schema).
 - **Pirch et al. 2605.14932:** Anchor citation for the OS-analog framework. Cite by author and arxiv ID.
 
 ---
