@@ -365,11 +365,11 @@ SPIFFE federation works across SPIFFE trust domains. There is no portable mechan
 
 ### 11.3 Canonicalization for approval binding
 
-AISVS C9.2.2 requires canonicalized action parameters; C9.2.3 requires cryptographic binding. Neither specifies which canonical form. The SymJack and Claw Chain attack clusters demonstrated that the canonical form must be the **post-resolution** form (post-symlink, post-heredoc, post-wrapper) and that every layer that displays the action must display the same canonical form. No framework has yet given a precise specification of canonical-form scope at L6.
+AISVS C9.2.2 requires canonicalized action parameters; C9.2.5 requires cryptographic binding. Neither specifies which canonical form. The SymJack and Claw Chain attack clusters demonstrated that the canonical form must be the **post-resolution** form (post-symlink, post-heredoc, post-wrapper) and that every layer that displays the action must display the same canonical form. No framework has yet given a precise specification of canonical-form scope at L6.
 
 ### 11.4 Cross-step composition gating
 
-AISVS C9.2.7 introduces the worst-case-governs rule as Level 3 and Proposed for v1.01. Implementation is rare. The Pirch framework's case study finds that none of OpenClaw, IronClaw, Nanobot, or NemoClaw implements anything close to cross-step composition gating. The CoSAI WS4 Agent Credentials RFC Section 5 (Credential Lifecycle & Enforcement) is the venue most likely to ship a normative cross-step composition rule in 2026.
+AISVS C9.2.7 introduces the worst-case-governs rule as Level 3, shipped in v1.0. Implementation is rare. The Pirch framework's case study finds that none of OpenClaw, IronClaw, Nanobot, or NemoClaw implements anything close to cross-step composition gating. The CoSAI WS4 Agent Credentials RFC Section 5 (Credential Lifecycle & Enforcement) is the venue most likely to ship a normative cross-step composition rule in 2026.
 
 ### 11.5 Chain audit schema as wire format
 
@@ -418,7 +418,7 @@ Pirch, L., Horlboge, M., Großmann, P., Asif, S. M., Kireev, K., Holz, T., and R
 
 ## Appendix A — Citation Discipline Notes
 
-- **OWASP AISVS C9.2.6 and C9.2.7:** Proposed for v1.01 (verbatim from the merged PR #822 text in the AISVS `research/` directory). Not yet in `1.0/en/`. Cite with the qualifier "Proposed for v1.01."
+- **OWASP AISVS C9.2.3, C9.2.4, C9.2.7:** Shipped in v1.0 (C9 Orchestration and Agentic Action) via issue #948 and PRs #961/#964. Originally proposed as C9.2.6 / C9.2.7 (merged PR #822) and renumbered on the v1.0 merge.
 - **CSA NHI v1.0:** Currently subtitled "Working Draft" in the docx header (verified 2026-06-11). Do not cite as a released v1.0 specification. Use "under peer review for v1.0" or "Working Draft."
 - **CoSAI WS4 Agent Credentials (#99):** In 4-week initial-draft window as of 2026-06-04. Cite as "in drafting" or "active drafting in WS4."
 - **CoSAI WS4 Trust-Aware Dataplane (#50):** Accepted, on focus slide. Cite as "accepted RFC."
