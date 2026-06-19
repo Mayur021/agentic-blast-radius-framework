@@ -67,7 +67,7 @@ Use the file path under the repo URL, e.g.:
 
 ## Citation discipline applied throughout this repository
 
-- **OWASP AISVS C9.2.6 / C9.2.7** cited as *"Proposed for v1.01"* — verbatim phrase from the merged PR text in the AISVS `research/` directory; controls are not yet in `1.0/en/`.
+- **OWASP AISVS C9.2.3, C9.2.4, C9.2.7** cited as shipped in v1.0 (C9 Orchestration and Agentic Action): reversibility classification (9.2.3), enforcement by class (9.2.4), worst-case-across-chain (9.2.7). Originally proposed as C9.2.6 / C9.2.7 and renumbered on merge (issue #948, PRs #961 and #964).
 - **CSA NHI v1.0** cited as *"Working Draft"* — the document subtitle as of 2026-06-11.
 - **CoSAI WS4 #99 Agent Credentials** cited as *"in 4-week initial-draft window"* (window opened 2026-06-04 working session).
 - **CoSAI WS4 #50 Trust-Aware Dataplane** cited as *"accepted RFC"*.
@@ -88,7 +88,7 @@ The OS-analog framework remains the cleanest host-side analysis of agent securit
 
 ## Related repositories
 
-- [`Mayur021/aisvs-action-class-reference`](https://github.com/Mayur021/aisvs-action-class-reference) — reference implementation of OWASP AISVS C9.2.6 and C9.2.7
+- [`Mayur021/aisvs-action-class-reference`](https://github.com/Mayur021/aisvs-action-class-reference): reference implementation of the OWASP AISVS v1.0 action-class controls (C9.2.3 reversibility classification, C9.2.4 enforcement, C9.2.7 worst-case chain)
 - [`Mayur021/agentic-standards-cross-walk`](https://github.com/Mayur021/agentic-standards-cross-walk) — vendor-neutral cross-walk across CSA / NIST / OWASP / CoSAI / SPDX
 
 ---
