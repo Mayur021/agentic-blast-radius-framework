@@ -8,11 +8,11 @@
 
 ## 1. Why an OSI-Stack Lens
 
-The Pirch et al. paper "Toward Securing AI Agents Like Operating Systems" (2026) maps agentic security to operating-system primitives: LLM ↔ user, agent runtime ↔ kernel, tools ↔ syscalls, skills ↔ programs, LLM context ↔ memory, files ↔ storage, gateway ↔ network, cron/heartbeat ↔ scheduler. Their analysis identifies three security boundaries — **network**, **kernel**, **file system** — and shows that the four widely-used OpenClaw-style agents (OpenClaw, IronClaw, Nanobot, NemoClaw) implement most OS-style protection mechanisms only partially or not at all.
+The Pirch et al. paper "Toward Securing AI Agents Like Operating Systems" (2026) maps agentic security to operating-system primitives: LLM ↔ user, agent runtime ↔ kernel, tools ↔ syscalls, skills ↔ programs, LLM context ↔ memory, files ↔ storage, gateway ↔ network, cron/heartbeat ↔ scheduler. Their analysis identifies three security boundaries (**network**, **kernel**, **file system**) and shows that the four widely-used OpenClaw-style agents (OpenClaw, IronClaw, Nanobot, NemoClaw) implement most OS-style protection mechanisms only partially or not at all.
 
 That framework is well-formed for host-side reasoning. It clarifies which agent component plays the role of kernel, which acts as a user, and where privilege boundaries should be enforced.
 
-What it does not surface directly is the **network-stack lens** — the OSI seven-layer model that practitioners use to reason about distributed system attack surface. Agentic systems are increasingly distributed: agents call remote tools, federate across clusters, traverse trust boundaries between organizations, and persist credentials across long-running multi-hop sessions. The Pirch framework treats network egress as a single boundary mediated by the gateway. In practice the egress crosses seven distinct layers, each with its own attack vectors and its own existing controls.
+What it does not surface directly is the **network-stack lens**, the OSI seven-layer model that practitioners use to reason about distributed system attack surface. Agentic systems are increasingly distributed: agents call remote tools, federate across clusters, traverse trust boundaries between organizations, and persist credentials across long-running multi-hop sessions. The Pirch framework treats network egress as a single boundary mediated by the gateway. In practice the egress crosses seven distinct layers, each with its own attack vectors and its own existing controls.
 
 This chapter introduces the OSI network-stack as a **complementary lens** on top of the OS-analog. The two are orthogonal: Pirch covers host-side privilege separation; OSI covers wire-level mediation. Together they form a more complete attack-surface model for agentic systems, and they feed directly into the **blast radius axes** introduced in earlier chapters of this framework (action class, chain depth, external reach, reversibility window, identity scope).
 
@@ -32,11 +32,11 @@ For agentic systems, each layer carries new responsibilities and new attack vect
 
 ---
 
-## 2. Layer 1 — Physical
+## 2. Layer 1: Physical
 
 ### Concern at this layer
 
-Agent runtimes execute on physical hosts that the agent does not control and often does not know are present. The agent's identity, its credentials, and its memory all live on hardware whose trustworthiness has to be established before the agent's runtime decisions can be trusted. The Pirch framework treats this as the "host" axiom — outside the threat model. For distributed agentic systems running on multi-tenant cloud or edge infrastructure, the host cannot be treated as axiomatic.
+Agent runtimes execute on physical hosts that the agent does not control and often does not know are present. The agent's identity, its credentials, and its memory all live on hardware whose trustworthiness has to be established before the agent's runtime decisions can be trusted. The Pirch framework treats this as the "host" axiom, outside the threat model. For distributed agentic systems running on multi-tenant cloud or edge infrastructure, the host cannot be treated as axiomatic.
 
 ### Attack vectors observed 2025-2026
 
@@ -55,21 +55,21 @@ Agent runtimes execute on physical hosts that the agent does not control and oft
 
 ### Gaps
 
-- **Agent identity rarely bound to persistent hardware identity.** Most OpenClaw-style runtimes generate or load a software identity at runtime. The hardware root of trust, when present, attests the host — not the agent. Without explicit binding, an attacker who can spin up an attested host can also run any agent on it with no detectable break.
+- **Agent identity rarely bound to persistent hardware identity.** Most OpenClaw-style runtimes generate or load a software identity at runtime. The hardware root of trust, when present, attests the host, not the agent. Without explicit binding, an attacker who can spin up an attested host can also run any agent on it with no detectable break.
 - **Confidential-compute coverage for agent state is partial.** TDX/SEV protect memory contents from the host operator but do not by themselves protect against a malicious tool or skill running inside the agent's own enclave.
 - **No standard schema for hardware-attested agent identity.** NIST AI 600-1 (Generative AI Profile) names hardware attestation as a control objective but does not specify the binding mechanism. WIMSE and SPIFFE work in this direction but are still drafting.
 
 ### Cross-walk to blast radius
 
-The L1 layer feeds the **identity scope axis** (workload-bound vs federated) and the **chain depth axis** (does the chain audit terminate in a hardware-rooted principal). When L1 is missing, the lowest verifiable identity in the chain is software-issued, and the worst-case-governs rule (AISVS C9.2.7, shipped v1.0) becomes harder to anchor.
+The L1 layer feeds the **identity scope axis** (workload-bound vs federated) and the **chain depth axis** (does the chain audit terminate in a hardware-rooted principal). When L1 is missing, the lowest verifiable identity in the chain is software-issued, and the worst-case-governs rule (AISVS C9.2.10, shipped v1.0) becomes harder to anchor.
 
 ---
 
-## 3. Layer 2 — Data Link
+## 3. Layer 2: Data Link
 
 ### Concern at this layer
 
-Within a single cluster or single host, agents communicate with sidecars, tools, and other agents through direct links — Unix domain sockets, named pipes, in-process channels, intra-node service mesh routes. The data-link layer concern is whether the link itself can be trusted, whether the peer on the other end of the link is the agent the runtime thinks it is, and whether the link's data plane can be observed or modified by another tenant on the same host.
+Within a single cluster or single host, agents communicate with sidecars, tools, and other agents through direct links: Unix domain sockets, named pipes, in-process channels, intra-node service mesh routes. The data-link layer concern is whether the link itself can be trusted, whether the peer on the other end of the link is the agent the runtime thinks it is, and whether the link's data plane can be observed or modified by another tenant on the same host.
 
 ### Attack vectors observed 2025-2026
 
@@ -90,15 +90,15 @@ Within a single cluster or single host, agents communicate with sidecars, tools,
 ### Gaps
 
 - **Per-agent identity below the pod level is still rare.** SPIFFE identities are typically issued per workload, which in Kubernetes maps to per-pod. Two agents in the same pod share an identity. The CoSAI WS4 Trust-Aware Dataplane RFC (#50, Parul Singh, accepted) addresses this with workload-identity-based authorization at hop boundaries, but the per-agent (vs per-workload) binding is still being specified.
-- **Sidecar trust boundary is implicit.** Most agent runtimes treat the sidecar as trusted. Pirch shows that agent runtime, agent core, tool execution, and file access in current OpenClaw-style agents all operate within the same application-level trust domain — sidecar bypass is therefore in scope.
+- **Sidecar trust boundary is implicit.** Most agent runtimes treat the sidecar as trusted. Pirch shows that agent runtime, agent core, tool execution, and file access in current OpenClaw-style agents all operate within the same application-level trust domain, so sidecar bypass is in scope.
 
 ### Cross-walk to blast radius
 
-L2 attacks affect the **identity scope axis** (shared vs per-agent identity) and the **chain depth axis** (whether intra-node hops in a multi-step plan can be independently attributed). They also feed the **reversibility window axis** — sidecar bypass that lets an attacker impersonate the agent leaves no audit trail at the L4+ layers, so the time-to-detect is unbounded.
+L2 attacks affect the **identity scope axis** (shared vs per-agent identity) and the **chain depth axis** (whether intra-node hops in a multi-step plan can be independently attributed). They also feed the **reversibility window axis**: sidecar bypass that lets an attacker impersonate the agent leaves no audit trail at the L4+ layers, so the time-to-detect is unbounded.
 
 ---
 
-## 4. Layer 3 — Network
+## 4. Layer 3: Network
 
 ### Concern at this layer
 
@@ -132,7 +132,7 @@ L3 maps directly to the **external reach axis** (in-tenant vs cross-tenant vs ou
 
 ---
 
-## 5. Layer 4 — Transport
+## 5. Layer 4: Transport
 
 ### Concern at this layer
 
@@ -140,8 +140,8 @@ The transport layer governs how agent connections are established, how long they
 
 ### Attack vectors observed 2025-2026
 
-- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9.5.6 specifically targets this: "long-running agent sessions re-evaluate current backend authorization policy on every privileged action" (renumbered from former C9.6.7 in the 2026-06-15 PR #928 + #934 cleanup).
-- **Connection reuse across delegation hops.** Agent A opens a TLS connection to a backend; agent A then delegates a task to agent B, which inherits the connection without re-attesting. The receipt-binding gap maps to AISVS C9.2.5 (cryptographic binding of approvals).
+- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9.5.6 targets this: long-running agent sessions re-evaluate current backend authorization policy on every privileged action. Re-verify the exact C9.5 sub-control numbering against the released v1.0 before citing at sub-control level.
+- **Connection reuse across delegation hops.** Agent A opens a TLS connection to a backend; agent A then delegates a task to agent B, which inherits the connection without re-attesting. The receipt-binding gap maps to AISVS C9.2.8 (cryptographic binding of approvals to action parameters).
 - **Token theft and replay over the wire.** Without channel binding, a stolen bearer token can be replayed from any client to any service.
 - **Port-level exposure of agent control planes.** PraisonAI CVE-2026-44338 (May 2026): agent server bound to 0.0.0.0 with AUTH_ENABLED=False as a hardcoded default; check_auth() that fails open. The orchestrator's approval logic was unreachable on the wire path attackers actually used.
 
@@ -154,7 +154,7 @@ The transport layer governs how agent connections are established, how long they
 | Demonstrating Proof of Possession at the application layer | RFC 9449 (DPoP) |
 | Token exchange for delegation | RFC 8693 |
 | Rich authorization requests (scope binding) | RFC 9396 |
-| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9.5.6 (Level 3 — renumbered from former C9.6.7 in 2026-06-15 cleanup) |
+| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9.5.6 (Level 3) |
 | Closed-by-default agent control-plane bind addresses | NIST SP 800-207 |
 
 ### Gaps
@@ -169,7 +169,7 @@ L4 affects the **reversibility window axis** (time to detect compromised connect
 
 ---
 
-## 6. Layer 5 — Session
+## 6. Layer 5: Session
 
 ### Concern at this layer
 
@@ -186,11 +186,11 @@ Sessions are how agents persist context across multiple events. The Pirch framew
 
 | Control | Source |
 | --- | --- |
-| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9.5.6 (Level 3 — renumbered from former C9.6.7 in 2026-06-15 cleanup) |
-| Session-bound credentials with short TTL | OAuth 2.1, AISVS C9.2.5 |
-| Cryptographic binding of approvals to nonce + TTL | AISVS C9.2.5 (Level 3) |
-| Independent context window per agent | (former AISVS C9.8.3 — removed with C9.8 section in 2026-06-15 PR #928 + #934 cleanup; multi-agent isolation now has no v1.0 main anchor; v1.01 contribution opportunity) |
-| Memory namespace isolation across agents | (former AISVS C9.8.2 — removed with C9.8 section in 2026-06-15 cleanup; v1.01 contribution opportunity) |
+| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9.5.6 (Level 3) |
+| Session-bound credentials with short TTL | OAuth 2.1, AISVS C9.2.8 |
+| Cryptographic binding of approvals to action parameters | AISVS C9.2.8 (Level 3) |
+| Independent context window per agent | AISVS C9.3 Component Isolation and Tool Authorization (re-verify sub-control numbering against released v1.0) |
+| Memory namespace isolation across agents | AISVS C9.3 Component Isolation and Tool Authorization (re-verify sub-control numbering against released v1.0) |
 
 ### Gaps
 
@@ -204,7 +204,7 @@ L5 maps to the **reversibility window axis** (session TTL is the upper bound on 
 
 ---
 
-## 7. Layer 6 — Presentation
+## 7. Layer 6: Presentation
 
 ### Concern at this layer
 
@@ -212,7 +212,7 @@ The presentation layer governs how data is serialized, encoded, and cryptographi
 
 ### Attack vectors observed 2025-2026
 
-- **Canonicalization bugs in approval-binding.** AISVS C9.2.5 requires approvals to be cryptographically bound to canonicalized action parameters. The Adversa AI SymJack test (May 26, 2026) showed Claude Code displaying the pre-resolution literal path while writing to the post-resolution symlink target. Five separate controls in the agent runtime each looked at a different representation of the same write; none resolved the symlink. The fix in v2.1.129 was to display the canonical destination, not the literal argument.
+- **Canonicalization bugs in approval-binding.** AISVS C9.2.8 requires approvals to be cryptographically bound to action parameters, and C9.2.2 requires display of canonical, complete action parameters at approval time. The Adversa AI SymJack test (May 26, 2026) showed Claude Code displaying the pre-resolution literal path while writing to the post-resolution symlink target. Five separate controls in the agent runtime each looked at a different representation of the same write; none resolved the symlink. The fix in v2.1.129 was to display the canonical destination, not the literal argument.
 - **JSON canonicalization variations.** Key ordering, Unicode normalization, redaction, diff rendering, and large payload summarization can all cause the human approver to see a different representation than the one signed.
 - **Heredoc shell expansion.** OpenClaw CVE-2026-44115 (May 15 2026) exercised shell-expansion tokens inside here-documents that passed the allowlist check at the wrapper layer but resolved to blocked commands at the heredoc-expander layer. The approval receipt has to bind to the post-heredoc-rendered argument vector.
 - **Loopback impersonation flags.** OpenClaw CVE-2026-44118 exercised a path where a non-owner client spoofed the senderIsOwner flag. The receipt's principal must be a cryptographically authenticated agent instance identity, not a transport-level boolean.
@@ -222,9 +222,9 @@ The presentation layer governs how data is serialized, encoded, and cryptographi
 | Control | Source |
 | --- | --- |
 | RFC 8785 JSON Canonicalization Scheme (JCS) | IETF |
-| Canonicalized + cryptographically bound approval payloads | OWASP AISVS C9.2.2, C9.2.5 |
+| Canonical action-parameter display + cryptographically bound approvals | OWASP AISVS C9.2.2, C9.2.8 |
 | Per-axis canonical resolution (symlink, heredoc, wrapper) | Implied by AISVS C9.2.2; not specified in detail |
-| Agent-instance identity bound into receipts | AISVS C9.4.1, C9.4.2 |
+| Agent-instance identity bound into receipts | AISVS C9.4 (re-verify sub-control numbering against released v1.0) |
 | JWS-style envelope with `created`, `expires`, nonce | RFC 9421 / Cloudflare Visa/Mastercard agentic commerce pattern |
 | Display the canonical post-resolution form to the human approver | Claude Code v2.1.129 corrective shape |
 
@@ -239,7 +239,7 @@ L6 attacks affect the **action class axis** directly. The Pirch framework's thre
 
 ---
 
-## 8. Layer 7 — Application
+## 8. Layer 7: Application
 
 ### Concern at this layer
 
@@ -247,9 +247,9 @@ L7 is where most of the existing literature on agentic security clusters. The ap
 
 ### Attack vectors observed 2025-2026
 
-- **Prompt injection and tool descriptor poisoning.** Pirch's threat model treats this as the "completely untrusted LLM" assumption. AISVS C9.9 (Architectural Data-Flow Isolation and Origin Enforcement) addresses the structural fix: separate plan generation from untrusted data processing.
-- **Agent-supplied action classification.** If the agent both proposes and classifies an action's risk level, a manipulated agent can mislabel an irreversible action as low-risk to clear its own gate. This is the gap AISVS C9.2.3 (shipped v1.0) closes: declare the action class in the tool/action manifest, not at runtime.
-- **Composition attacks across multi-step plans.** Individual steps each pass a low-risk gate; the composed chain reaches an irreversible high-impact outcome that no single-step gate caught. AISVS C9.2.7 (shipped v1.0) introduces the worst-case-governs rule: before a multi-step plan executes, the gate is set by the least-reversible, highest-blast-radius action reachable in the chain.
+- **Prompt injection and tool descriptor poisoning.** Pirch's threat model treats this as the "completely untrusted LLM" assumption. AISVS C9.3 (Component Isolation and Tool Authorization) addresses the structural fix: keep enforcement outside the model's reasoning loop and constrain tool and component execution.
+- **Agent-supplied action classification.** If the agent both proposes and classifies an action's risk level, a manipulated agent can mislabel an irreversible action as low-risk to clear its own gate. AISVS C9.2.3 (shipped v1.0) requires that each high-impact action have a trusted reversibility classification. Declaring the class in the tool or action manifest at design time, read by the gate rather than derived from the agent's runtime output, is this framework's mechanism for making the classification trusted.
+- **Composition attacks across multi-step plans.** Individual steps each pass a low-risk gate; the composed chain reaches an irreversible high-impact outcome that no single-step gate caught. AISVS C9.2.10 (shipped v1.0) requires that approval gates for multi-step or multi-agent chains enforce the highest-impact reversibility classification present anywhere in the chain. C9.2.10 governs the chain by worst-case reversibility class only; the blast-radius axis used elsewhere in this framework is the author's extension, not part of C9.2.10.
 - **MCP tool descriptor manipulation.** A malicious MCP server returns tool descriptors that override the agent's policy or instructions.
 - **A2A AgentCard spoofing.** An A2A peer presents an AgentCard claiming capabilities it does not have, or claiming an identity it has not been issued.
 
@@ -257,14 +257,13 @@ L7 is where most of the existing literature on agentic security clusters. The ap
 
 | Control | Source |
 | --- | --- |
-| Pre-execution gate on privileged or irreversible actions | OWASP AISVS C9.2.1 (Level 1) |
-| Approval payload bound to canonicalized parameters | OWASP AISVS C9.2.2 (Level 2) |
-| Cryptographic binding of approval to identity + scope + chain ID + nonce + TTL | OWASP AISVS C9.2.5 (Level 3) |
-| Manifest-declared action class drives the gate | OWASP AISVS C9.2.3 + C9.2.4 (Level 2, shipped v1.0) |
-| Worst-case action class across the chain governs | OWASP AISVS C9.2.7 (Level 3, shipped v1.0) |
-| Tool manifests declare privileges and side-effect level | OWASP AISVS C9.3.3 (Level 2) |
-| Architectural separation of plan generation from untrusted data | OWASP AISVS C9.3.6 (Level 2 — closest equivalent after former C9.9.1 was removed in 2026-06-15 PR #928 + #934 cleanup) |
-| Origin-aware policy enforcement | (former AISVS C9.9.4 / 9.9.5 — removed with C9.9 section in 2026-06-15 cleanup; no direct v1.0 main anchor; v1.01 contribution opportunity) |
+| Pre-execution gate on privileged or irreversible actions | OWASP AISVS C9.2 high-impact action approval (Level 1) |
+| Display of canonical, complete action parameters at approval time | OWASP AISVS C9.2.2 (Level 2) |
+| Approvals cryptographically bound to action parameters | OWASP AISVS C9.2.8 (Level 3) |
+| Trusted reversibility classification drives the gate | OWASP AISVS C9.2.3 + C9.2.4 (Level 2, shipped v1.0) |
+| Worst-case reversibility class across the chain governs | OWASP AISVS C9.2.10 (Level 3, shipped v1.0) |
+| Component isolation and tool authorization | OWASP AISVS C9.3 (re-verify sub-control numbering against released v1.0) |
+| Enforcement outside the model's reasoning loop | OWASP AISVS C9.3 Component Isolation and Tool Authorization |
 | MCP authentication and authorization | MCP 2026-07-28 spec, OAuth 2.1 + RFC 9728 + RFC 8707 |
 | A2A AgentCard signed with JWS + JCS + mTLS | A2A v1.0.1 |
 | Verifiable credentials for agent claims | W3C VC Data Model 2.0 (Recommendation 15 May 2025), DID Core 1.0 |
@@ -272,13 +271,13 @@ L7 is where most of the existing literature on agentic security clusters. The ap
 
 ### Gaps
 
-- **Cross-step composition gating remains rare in production.** AISVS C9.2.7 is Level 3, shipped in v1.0. Implementations are not yet broadly available.
-- **Manifest-declared classification is implementation-specific.** AISVS specifies that the class belongs in the tool/action manifest as a structured property; it does not specify the wire format. CoSAI WS4 Section 5 (Credential Lifecycle & Enforcement, in the Agent Credentials RFC sub-section signup window) is one venue for converging on a wire-level schema.
-- **Cryptographic chain audit at the application layer** is still emerging. Per 2026-06-15 deep audit of `/root/Defining_Non-Human_Identity.docx`: CSA NHI v1.0 anchors a four-element attribution language (delegator / agent / intent / actions) at paragraph 222 — a joint peer-review contribution with Mallikarjunarao Sunke. The full six-property chain audit schema developed in the same joint work (identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property) is NOT verbatim in v1.0 and is targeted for v2.0 inclusion. The schema needs to be carried in the action manifest and verified at the gate; specification of where in the manifest is still under discussion.
+- **Cross-step composition gating remains rare in production.** AISVS C9.2.10 is Level 3, shipped in v1.0. Implementations are not yet broadly available.
+- **Manifest-declared classification is implementation-specific.** AISVS C9.2.3 requires the reversibility classification to be trusted; declaring the class in the tool or action manifest as a structured property is this framework's mechanism for that, and it does not specify the wire format. CoSAI WS4 Section 5 (Credential Lifecycle & Enforcement, in the Agent Credentials RFC sub-section signup window) is one venue for converging on a wire-level schema.
+- **Cryptographic chain audit at the application layer** is still emerging. Per 2026-06-15 deep audit of `/root/Defining_Non-Human_Identity.docx`: CSA NHI v1.0 anchors a four-element attribution language (delegator / agent / intent / actions) at paragraph 222, a joint peer-review contribution with Mallikarjunarao Sunke. The full six-property chain audit schema developed in the same joint work (identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property) is NOT verbatim in v1.0 and is targeted for v2.0 inclusion. The schema needs to be carried in the action manifest and verified at the gate; specification of where in the manifest is still under discussion.
 
 ### Cross-walk to blast radius
 
-L7 is where every blast-radius axis lands its enforcement decision. The action class axis is enforced by the C9.2.1 gate using the C9.2.3 reversibility classification with C9.2.4 enforcement; the chain depth axis is enforced by the C9.2.7 worst-case rule; the external reach axis is enforced by the C9.3.3 manifest declaration of side-effect level; the reversibility window is bounded by the C9.2.5 binding on the receipt; the identity scope is enforced by the C9.4.1 cryptographic identity of the agent instance.
+L7 is where every blast-radius axis lands its enforcement decision. The action class axis is enforced by the C9.2 high-impact action gate using the C9.2.3 trusted reversibility classification with C9.2.4 enforcement; the chain depth axis is enforced by the C9.2.10 worst-case rule; the external reach axis is enforced by the tool and action manifest declaration of side-effect level; the reversibility window is bounded by the C9.2.8 binding on the receipt; the identity scope is enforced by the C9.3 component isolation and tool authorization controls on the agent instance.
 
 ---
 
@@ -286,7 +285,7 @@ L7 is where every blast-radius axis lands its enforcement decision. The action c
 
 ### 9.1 Identity provenance from L1 to L7
 
-The agent's identity has to survive every layer transition. A hardware-attested identity at L1 has to be inherited by the workload identity at L2, the federated identity at L3, the channel-bound token at L4, the session-bound credential at L5, the canonical receipt at L6, and the action manifest at L7. If any layer breaks the chain — for example, if the workload identity at L2 is per-pod rather than per-agent, or the session-bound credential at L5 is shared across agents — the identity provenance lost cannot be reconstructed at a later layer.
+The agent's identity has to survive every layer transition. A hardware-attested identity at L1 has to be inherited by the workload identity at L2, the federated identity at L3, the channel-bound token at L4, the session-bound credential at L5, the canonical receipt at L6, and the action manifest at L7. If any layer breaks the chain (for example, if the workload identity at L2 is per-pod rather than per-agent, or the session-bound credential at L5 is shared across agents), the identity provenance lost cannot be reconstructed at a later layer.
 
 The Pirch framework's "agent identity" component (the `AGENT.md` file) lives at L7 in their analysis. The OSI lens shows that L7 identity is only as strong as the lowest-layer identity the chain inherits from.
 
@@ -298,7 +297,7 @@ When the action class declaration is stripped at any layer in transit, the gate 
 
 ### 9.3 Chain audit across the stack
 
-The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion — v1.0 anchors only the four-element attribution language at paragraph 222) captures identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property. Each property answers a question at a different OSI layer:
+The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion, where v1.0 anchors only the four-element attribution language at paragraph 222) captures identity, authentication mechanism, scope, lifecycle stamp, parent-chain binding, and immutability of the originating principal as schema property. Each property answers a question at a different OSI layer:
 
 | Property | Layer where it is established | Layer where it is verified |
 | --- | --- | --- |
@@ -319,31 +318,31 @@ An irreversible L7 action originating from a forged L1 identity has higher blast
 
 ## 10. Framework Cross-Walk Matrix
 
-Coverage of each OSI layer by major frameworks. ✓ = layer is addressed; partial = some controls but not comprehensive; — = not addressed at this layer by this framework.
+Coverage of each OSI layer by major frameworks. ✓ = layer is addressed; partial = some controls but not comprehensive; no = not addressed at this layer by this framework.
 
 | Framework | L1 | L2 | L3 | L4 | L5 | L6 | L7 |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| NIST SP 800-207 Zero Trust | ✓ | ✓ | ✓ | ✓ | partial | — | ✓ |
-| NIST AI 600-1 (GenAI Profile) | — | — | partial | — | partial | partial | ✓ |
+| NIST SP 800-207 Zero Trust | ✓ | ✓ | ✓ | ✓ | partial | no | ✓ |
+| NIST AI 600-1 (GenAI Profile) | no | no | partial | no | partial | partial | ✓ |
 | NIST IR 8596 Cyber AI Profile | partial | partial | ✓ | ✓ | ✓ | partial | ✓ |
-| CSA NHI v1.0 (Working Draft) | partial | ✓ | — | ✓ | ✓ | — | ✓ |
-| OWASP AISVS C9 (v1.0) | — | partial | — | partial | ✓ | ✓ | ✓ |
-| CoSAI WS4 #99 Agent Credentials | partial | ✓ | — | ✓ | ✓ | partial | ✓ |
-| CoSAI WS4 #50 Trust-Aware Dataplane | — | ✓ | ✓ | ✓ | — | — | ✓ |
-| CoSAI WS4 #57 / #91 AI Gateways | — | — | ✓ | ✓ | partial | partial | ✓ |
-| CoSAI WS4 #52 / #116 Identity Arch Playbook | — | ✓ | partial | ✓ | ✓ | — | ✓ |
-| MCP 2026-07-28 spec | — | — | — | ✓ | ✓ | ✓ | ✓ |
-| A2A v1.0.1 | — | — | — | ✓ | partial | ✓ | ✓ |
-| W3C VC Data Model 2.0 | — | — | — | partial | — | ✓ | ✓ |
-| DID Core 1.0 | — | — | — | partial | — | ✓ | ✓ |
-| SPIFFE / SPIRE | partial | ✓ | partial | ✓ | — | — | partial |
-| WIMSE (drafts) | — | ✓ | — | ✓ | partial | — | ✓ |
-| MITRE ATLAS | — | — | — | — | partial | — | ✓ |
-| ISO/IEC 42001 | — | — | — | — | — | — | partial |
-| EU AI Act Article 14 | — | — | — | — | — | — | ✓ |
-| Singapore IMDA MGF Agentic v1.5 | — | — | — | — | — | — | ✓ |
-| Five Eyes "Careful Adoption of Agentic AI Services" (May 1 2026) | — | — | partial | partial | partial | — | ✓ |
-| Pirch et al. arxiv 2605.14932 (OS-analog) | partial | ✓ | partial | partial | ✓ | — | ✓ |
+| CSA NHI v1.0 (Working Draft) | partial | ✓ | no | ✓ | ✓ | no | ✓ |
+| OWASP AISVS C9 (v1.0) | no | partial | no | partial | ✓ | ✓ | ✓ |
+| CoSAI WS4 #99 Agent Credentials | partial | ✓ | no | ✓ | ✓ | partial | ✓ |
+| CoSAI WS4 #50 Trust-Aware Dataplane | no | ✓ | ✓ | ✓ | no | no | ✓ |
+| CoSAI WS4 #57 / #91 AI Gateways | no | no | ✓ | ✓ | partial | partial | ✓ |
+| CoSAI WS4 #52 / #116 Identity Arch Playbook | no | ✓ | partial | ✓ | ✓ | no | ✓ |
+| MCP 2026-07-28 spec | no | no | no | ✓ | ✓ | ✓ | ✓ |
+| A2A v1.0.1 | no | no | no | ✓ | partial | ✓ | ✓ |
+| W3C VC Data Model 2.0 | no | no | no | partial | no | ✓ | ✓ |
+| DID Core 1.0 | no | no | no | partial | no | ✓ | ✓ |
+| SPIFFE / SPIRE | partial | ✓ | partial | ✓ | no | no | partial |
+| WIMSE (drafts) | no | ✓ | no | ✓ | partial | no | ✓ |
+| MITRE ATLAS | no | no | no | no | partial | no | ✓ |
+| ISO/IEC 42001 | no | no | no | no | no | no | partial |
+| EU AI Act Article 14 | no | no | no | no | no | no | ✓ |
+| Singapore IMDA MGF Agentic v1.5 | no | no | no | no | no | no | ✓ |
+| Five Eyes "Careful Adoption of Agentic AI Services" (May 1 2026) | no | no | partial | partial | partial | no | ✓ |
+| Pirch et al. arxiv 2605.14932 (OS-analog) | partial | ✓ | partial | partial | ✓ | no | ✓ |
 
 ### What the matrix shows
 
@@ -353,7 +352,7 @@ The L1 gap is consequential. Without hardware-rooted identity, every layer above
 
 ---
 
-## 11. Gap Analysis — Where Current Frameworks Do Not Land
+## 11. Gap Analysis: Where Current Frameworks Do Not Land
 
 ### 11.1 Per-agent identity below the workload boundary
 
@@ -369,11 +368,11 @@ AISVS C9.2.2 requires canonicalized action parameters; C9.2.5 requires cryptogra
 
 ### 11.4 Cross-step composition gating
 
-AISVS C9.2.7 introduces the worst-case-governs rule as Level 3, shipped in v1.0. Implementation is rare. The Pirch framework's case study finds that none of OpenClaw, IronClaw, Nanobot, or NemoClaw implements anything close to cross-step composition gating. The CoSAI WS4 Agent Credentials RFC Section 5 (Credential Lifecycle & Enforcement) is the venue most likely to ship a normative cross-step composition rule in 2026.
+AISVS C9.2.10 carries the worst-case-governs rule as Level 3, shipped in v1.0. Implementation is rare. The Pirch framework's case study finds that none of OpenClaw, IronClaw, Nanobot, or NemoClaw implements anything close to cross-step composition gating. The CoSAI WS4 Agent Credentials RFC Section 5 (Credential Lifecycle & Enforcement) is the venue most likely to ship a normative cross-step composition rule in 2026.
 
 ### 11.5 Chain audit schema as wire format
 
-The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion — v1.0 anchors only the four-element attribution language at paragraph 222) is well-formed at the property level. The wire format — where in the action manifest, the credential, or the JWS envelope the properties live — is not yet specified. CoSAI WS4 #99 and CSA NHI v2.0 drafting window are the active drafting venues.
+The full six-property chain audit schema (joint work with Mallikarjunarao Sunke; targeted for CSA NHI v2.0 inclusion, where v1.0 anchors only the four-element attribution language at paragraph 222) is well-formed at the property level. The wire format, meaning where in the action manifest, the credential, or the JWS envelope the properties live, is not yet specified. CoSAI WS4 #99 and CSA NHI v2.0 drafting window are the active drafting venues.
 
 ### 11.6 Hardware-rooted agent identity
 
@@ -399,14 +398,14 @@ The OSI lens complements the OS-analog (Pirch et al.) by making the network-stac
 - A normative canonical-form specification for approval binding at L6.
 - A wire-format specification for the full six-property chain audit schema at L7 (CSA NHI v2.0 hook).
 - A hardware-rooted agent-instance identity binding spec for L1 → L7.
-- A cross-step composition gating reference implementation (AISVS C9.2.7 reference).
+- A cross-step composition gating reference implementation (AISVS C9.2.10 reference).
 
 ### 12.3 Cross-framework engagement points
 
 This chapter is intended as input to any working group, standards body, or research effort that wants to adopt or extend it. Adjacent surfaces where the substance is directly relevant:
 
 - The CoSAI WS4 Agent Credentials RFC (#99, Section 5 Credential Lifecycle & Enforcement sub-section).
-- The OWASP AISVS v1.01 train (C9.2.6 / C9.2.7 reference implementation).
+- A reference implementation of the OWASP AISVS v1.0 C9.2.3, C9.2.4, and C9.2.10 action-class controls.
 - The IETF Internet-Draft on action-class authority + full six-property chain audit schema (Q3-Q4 2026 target; CSA NHI v2.0 hook).
 - Working groups under CSA, OWASP, CoSAI, NIST, ISO, IETF where blast-radius modeling at the identity layer is in scope.
 
@@ -416,9 +415,9 @@ Pirch, L., Horlboge, M., Großmann, P., Asif, S. M., Kireev, K., Holz, T., and R
 
 ---
 
-## Appendix A — Citation Discipline Notes
+## Appendix A: Citation Discipline Notes
 
-- **OWASP AISVS C9.2.3, C9.2.4, C9.2.7:** Shipped in v1.0 (C9 Orchestration and Agentic Action) via issue #948 and PRs #961/#964. Originally proposed as C9.2.6 / C9.2.7 (merged PR #822) and renumbered on the v1.0 merge.
+- **OWASP AISVS C9.2.3, C9.2.4, C9.2.10:** Shipped in OWASP AISVS v1.0, released June 2026, in the C9 Orchestration & Agentic Security chapter. C9.2.3 (Level 2) requires a trusted reversibility classification (read-only, reversible, externally reversible, or irreversible); C9.2.4 (Level 2) requires runtime enforcement by that classification; C9.2.10 (Level 3) requires the highest-impact reversibility class present anywhere in a multi-step or multi-agent chain to govern the gate. The manifest-declaration mechanism, the independent blast-radius axis, and the fail-closed-for-unclassified-tools default are this framework's architectural extensions, not separate AISVS controls.
 - **CSA NHI v1.0:** Currently subtitled "Working Draft" in the docx header (verified 2026-06-11). Do not cite as a released v1.0 specification. Use "under peer review for v1.0" or "Working Draft."
 - **CoSAI WS4 Agent Credentials (#99):** In 4-week initial-draft window as of 2026-06-04. Cite as "in drafting" or "active drafting in WS4."
 - **CoSAI WS4 Trust-Aware Dataplane (#50):** Accepted, on focus slide. Cite as "accepted RFC."

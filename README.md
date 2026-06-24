@@ -8,11 +8,11 @@ The term *agentic blast radius* is industry-adopted vocabulary as of 2026 (NHI M
 
 ## Axes
 
-1. **Action class** — read-only / reversible / external-reversible / irreversible
-2. **Chain depth** — single-step vs multi-hop agent-to-agent invocation
-3. **External reach** — in-tenant / cross-tenant / outside-org / third-party
-4. **Reversibility window** — time to detect and revert before harm propagates
-5. **Identity scope** — workload-bound / shared / federated
+1. **Action class**: read-only / reversible / external-reversible / irreversible
+2. **Chain depth**: single-step vs multi-hop agent-to-agent invocation
+3. **External reach**: in-tenant / cross-tenant / outside-org / third-party
+4. **Reversibility window**: time to detect and revert before harm propagates
+5. **Identity scope**: workload-bound / shared / federated
 
 Each axis carries bounding requirements that map to controls in existing standards.
 
@@ -20,7 +20,7 @@ Each axis carries bounding requirements that map to controls in existing standar
 
 ## Chapters
 
-- [OSI 7-Layer Cross-Walk](./chapter_osi_layer_crosswalk.md) — network-stack lens for agentic security; per-layer concerns, 2025-2026 attack vectors, existing controls, and gaps from L1 (Physical) to L7 (Application). Companion to Pirch et al. *arxiv 2605.14932* OS-analog framework.
+- [OSI 7-Layer Cross-Walk](./chapter_osi_layer_crosswalk.md): network-stack lens for agentic security; per-layer concerns, 2025-2026 attack vectors, existing controls, and gaps from L1 (Physical) to L7 (Application). Companion to Pirch et al. *arxiv 2605.14932* OS-analog framework.
 
 Additional chapters in drafting.
 
@@ -47,7 +47,7 @@ Anyone is free to use, fork, extend, and cite the framework under the Apache 2.0
 
 **Academic / formal citation:**
 
-> Agnihotri, M. *Agentic Blast Radius Framework — Modeling and Bounding Non-Human Identity Impact.* GitHub repository, 2026. https://github.com/Mayur021/agentic-blast-radius-framework
+> Agnihotri, M. *Agentic Blast Radius Framework: Modeling and Bounding Non-Human Identity Impact.* GitHub repository, 2026. https://github.com/Mayur021/agentic-blast-radius-framework
 
 **Inline / informal citation:**
 
@@ -67,11 +67,11 @@ Use the file path under the repo URL, e.g.:
 
 ## Citation discipline applied throughout this repository
 
-- **OWASP AISVS C9.2.3, C9.2.4, C9.2.7** cited as shipped in v1.0 (C9 Orchestration and Agentic Action): reversibility classification (9.2.3), enforcement by class (9.2.4), worst-case-across-chain (9.2.7). Originally proposed as C9.2.6 / C9.2.7 and renumbered on merge (issue #948, PRs #961 and #964).
-- **CSA NHI v1.0** cited as *"Working Draft"* — the document subtitle as of 2026-06-11.
+- **OWASP AISVS C9.2.3, C9.2.4, C9.2.10** cited as shipped in v1.0 (released June 2026), in the C9 Orchestration & Agentic Security chapter: reversibility classification (C9.2.3), enforcement by class (C9.2.4), worst-case-across-chain (C9.2.10). The manifest-declaration mechanism, the independent blast-radius axis, and the fail-closed-for-unclassified-tools default are this framework's architectural extensions, not separate AISVS controls; C9.2.3 requires that the classification be trusted, and C9.2.10 governs the chain by worst-case reversibility class only.
+- **CSA NHI** cited as under peer review (subtitled *"Working Draft"* as of 2026-06-11); not cited as a released specification.
 - **CoSAI WS4 #99 Agent Credentials** cited as *"in 4-week initial-draft window"* (window opened 2026-06-04 working session).
 - **CoSAI WS4 #50 Trust-Aware Dataplane** cited as *"accepted RFC"*.
-- **CSA NHI joint contribution** joint-credited to **Mallikarjunarao Sunke** — never solo claim. v1.0 anchors the four-element attribution language (delegator / agent / intent / actions) at paragraph 222; the full six-property chain audit schema is targeted for v2.0 inclusion (verified 2026-06-15 against `/root/Defining_Non-Human_Identity.docx`).
+- **CSA NHI joint contribution** joint-credited to **Mallikarjunarao Sunke**, never solo claim. The four-element attribution language (delegator / agent / intent / actions) sits at paragraph 222 of the draft; the full six-property chain audit schema is targeted for v2.0 inclusion (verified 2026-06-15 against `/root/Defining_Non-Human_Identity.docx`).
 - **Pirch et al. arxiv 2605.14932** cited as the anchor for OS-analog reasoning about agent security.
 
 ---
@@ -88,8 +88,8 @@ The OS-analog framework remains the cleanest host-side analysis of agent securit
 
 ## Related repositories
 
-- [`Mayur021/aisvs-action-class-reference`](https://github.com/Mayur021/aisvs-action-class-reference): reference implementation of the OWASP AISVS v1.0 action-class controls (C9.2.3 reversibility classification, C9.2.4 enforcement, C9.2.7 worst-case chain)
-- [`Mayur021/agentic-standards-cross-walk`](https://github.com/Mayur021/agentic-standards-cross-walk) — vendor-neutral cross-walk across CSA / NIST / OWASP / CoSAI / SPDX
+- [`Mayur021/aisvs-action-class-reference`](https://github.com/Mayur021/aisvs-action-class-reference): reference implementation of the OWASP AISVS v1.0 action-class controls (C9.2.3 reversibility classification, C9.2.4 enforcement, C9.2.10 worst-case chain)
+- [`Mayur021/agentic-standards-cross-walk`](https://github.com/Mayur021/agentic-standards-cross-walk): vendor-neutral cross-walk across CSA / NIST / OWASP / CoSAI / SPDX
 
 ---
 
@@ -99,7 +99,7 @@ Issues and pull requests welcome. The framework benefits from cross-cluster revi
 
 - Per-layer attack vectors observed in production agentic deployments
 - Framework coverage corrections (the matrix is a snapshot; coverage evolves)
-- Joint-authored extensions where existing standards intersect with the axes
+- Joint-contributed extensions where existing standards intersect with the axes
 
 ---
 
