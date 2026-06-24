@@ -140,7 +140,7 @@ The transport layer governs how agent connections are established, how long they
 
 ### Attack vectors observed 2025-2026
 
-- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9.5.6 targets this: long-running agent sessions re-evaluate current backend authorization policy on every privileged action. Re-verify the exact C9.5 sub-control numbering against the released v1.0 before citing at sub-control level.
+- **Long-lived agent sessions accumulating privilege.** An agent connection opened with one set of credentials remains valid as the agent's role and the user's authorization change. AISVS C9 (Orchestration & Agentic Security) targets this at the chapter level: long-running agent sessions should re-evaluate current backend authorization policy on every privileged action. Verify the exact sub-control against the released v1.0 before citing at sub-control level.
 - **Connection reuse across delegation hops.** Agent A opens a TLS connection to a backend; agent A then delegates a task to agent B, which inherits the connection without re-attesting. The receipt-binding gap maps to AISVS C9.2.8 (cryptographic binding of approvals to action parameters).
 - **Token theft and replay over the wire.** Without channel binding, a stolen bearer token can be replayed from any client to any service.
 - **Port-level exposure of agent control planes.** PraisonAI CVE-2026-44338 (May 2026): agent server bound to 0.0.0.0 with AUTH_ENABLED=False as a hardcoded default; check_auth() that fails open. The orchestrator's approval logic was unreachable on the wire path attackers actually used.
@@ -154,7 +154,7 @@ The transport layer governs how agent connections are established, how long they
 | Demonstrating Proof of Possession at the application layer | RFC 9449 (DPoP) |
 | Token exchange for delegation | RFC 8693 |
 | Rich authorization requests (scope binding) | RFC 9396 |
-| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9.5.6 (Level 3) |
+| Continuous policy re-evaluation on every privileged action | OWASP AISVS C9 Orchestration & Agentic Security (verify sub-control vs released v1.0) |
 | Closed-by-default agent control-plane bind addresses | NIST SP 800-207 |
 
 ### Gaps
@@ -186,7 +186,7 @@ Sessions are how agents persist context across multiple events. The Pirch framew
 
 | Control | Source |
 | --- | --- |
-| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9.5.6 (Level 3) |
+| Per-action policy re-evaluation in long-running sessions | OWASP AISVS C9 Orchestration & Agentic Security (verify sub-control vs released v1.0) |
 | Session-bound credentials with short TTL | OAuth 2.1, AISVS C9.2.8 |
 | Cryptographic binding of approvals to action parameters | AISVS C9.2.8 (Level 3) |
 | Independent context window per agent | AISVS C9.3 Component Isolation and Tool Authorization (re-verify sub-control numbering against released v1.0) |
